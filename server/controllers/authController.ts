@@ -57,7 +57,24 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 //POST api/auth/login
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
-
+        const { email, password } = req.body;
+        if(!email || !password) {
+            res.status(401).json({message:"Please enter email and password"})
+            return;
+        }
+        
+        //Check for user 
+        const user = await User.findOne({email})
+        if (!user) {
+            res.status(401).json({message: "Invalid email or password"});
+            return;
+        }
+        // Check if password matches
+        const isMatch = await bcrypt.compare=(password, user.password || "")
+        if (!isMatch) {
+            res.status(401).json({message: "Invalid email or password"});
+            return;
+        }
     } catch (error) {}
 }
 
@@ -66,6 +83,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 //@access private
 export const getMe = async (req: Request, res: Response): Promise<void> => {
     try {
-
+        
     } catch (error) {}
 }

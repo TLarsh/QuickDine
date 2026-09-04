@@ -70,12 +70,22 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             return;
         }
         // Check if password matches
-        const isMatch = await bcrypt.compare=(password, user.password || "")
+        const isMatch = await bcrypt.compare(password, user.password || "")
         if (!isMatch) {
             res.status(401).json({message: "Invalid email or password"});
             return;
         }
-    } catch (error) {}
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            token: generateToken(user._id.toString())
+        });
+    } catch (error: any) {
+        res.status(400).json({message: error.message});
+    }
 }
 
 //Get user profile
@@ -83,6 +93,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 //@access private
 export const getMe = async (req: Request, res: Response): Promise<void> => {
     try {
-        
-    } catch (error) {}
+        const user = await User.findById(req.user._id);
+    } catch (error) {
+        res.status(500).json({message: "Internal server error"});
+    }
 }

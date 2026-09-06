@@ -91,10 +91,10 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 //Get user profile
 //GET api/auth/me
 //@access private
-export const getMe = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const user = await User.findById(req.user._id);
-    } catch (error) {
-        res.status(500).json({message: "Internal server error"});
-    }
-}
+// export const getMe = async (req: Request, res: Response): Promise<void> => {
+//     try {
+//         const user = await User.findById(req.user._id);
+//     } catch (error) {
+//         res.status(500).json({message: "Internal server error"});
+//     }
+// }

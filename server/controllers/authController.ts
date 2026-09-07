@@ -14,7 +14,7 @@ const generateToken = (id: string) => {
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { name, email, password, phone, role } = req.body;
-        if(!email || !name || password) {
+        if(!email || !name || !password) {
             res.status(400).json({message:"Please enter all required fields"})
             return;
         }
@@ -93,8 +93,20 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 //@access private
 export const getMe = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await User.findById(req.user._id);
+        if (!req.user) {
+            res.status(401).json({ message: "Not authorized" });
+            return;
+        }
+
+        const user = await User.findById(req.user._id).select('-password');
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        res.json(user);
     } catch (error) {
-        res.status(500).json({message: "Internal server error"});
+        res.status(500).json({ message: "Internal server error" });
     }
 }
